@@ -1,0 +1,199 @@
+{
+  "api_credentials": {
+    "tradier": {
+      "api_key": "YOUR_TRADIER_API_KEY",
+      "account_id": "YOUR_TRADIER_ACCOUNT_ID",
+      "sandbox_mode": true
+    },
+    "twitter": {
+      "api_key": "YOUR_TWITTER_API_KEY",
+      "api_secret": "YOUR_TWITTER_API_SECRET",
+      "access_token": "YOUR_TWITTER_ACCESS_TOKEN",
+      "access_token_secret": "YOUR_TWITTER_ACCESS_TOKEN_SECRET"
+    },
+    "google_drive": {
+      "credentials_file": "credentials.json",
+      "token_file": "token.pickle",
+      "folder_id": "YOUR_GOOGLE_DRIVE_FOLDER_ID"
+    },
+    "discord": {
+      "webhook_url": "YOUR_DISCORD_WEBHOOK_URL"
+    }
+  },
+  "market_hours": {
+    "timezone": "America/New_York",
+    "open_time": "09:30",
+    "close_time": "16:00",
+    "pre_market_start": "08:00",
+    "after_hours_end": "20:00",
+    "weekend_days": [5, 6],
+    "holidays": [
+      "2025-01-01",
+      "2025-01-20",
+      "2025-02-17",
+      "2025-04-18",
+      "2025-05-26",
+      "2025-07-04",
+      "2025-09-01",
+      "2025-11-27",
+      "2025-12-25"
+    ]
+  },
+  "ticker_list": [
+    "AAPL",
+    "MSFT",
+    "GOOGL",
+    "AMZN",
+    "NVDA",
+    "META",
+    "TSLA",
+    "JPM",
+    "V",
+    "WMT",
+    "PG",
+    "JNJ",
+    "UNH",
+    "HD",
+    "BAC",
+    "XOM",
+    "PFE",
+    "INTC",
+    "VZ",
+    "KO",
+    "DIS",
+    "CSCO",
+    "ADBE",
+    "CRM",
+    "AMD",
+    "NFLX",
+    "AVGO",
+    "QCOM",
+    "COST",
+    "PEP"
+  ],
+  "watchlist": {
+    "high_priority": ["AAPL", "NVDA", "TSLA", "AMZN", "SPY"],
+    "medium_priority": ["MSFT", "GOOGL", "META", "AMD", "QQQ"],
+    "low_priority": ["JPM", "V", "XOM", "DIS", "IWM"]
+  },
+  "option_scanner": {
+    "min_days_to_expiration": 7,
+    "max_days_to_expiration": 45,
+    "min_open_interest": 100,
+    "min_volume": 50,
+    "max_price": 10.0,
+    "min_price": 0.10,
+    "focus_on_strikes": [-3, -2, -1, 0, 1, 2, 3],
+    "scan_interval_seconds": 60
+  },
+  "pricing_models": {
+    "black_scholes": {
+      "enabled": true,
+      "weight": 0.3,
+      "parameters": {
+        "risk_free_rate": 0.05,
+        "dividend_yield": 0.0
+      }
+    },
+    "binomial": {
+      "enabled": true,
+      "weight": 0.2,
+      "parameters": {
+        "steps": 50,
+        "risk_free_rate": 0.05,
+        "dividend_yield": 0.0
+      }
+    },
+    "merton_jump_diffusion": {
+      "enabled": true,
+      "weight": 0.15,
+      "parameters": {
+        "jump_intensity": 0.1,
+        "jump_mean": -0.05,
+        "jump_std": 0.1,
+        "risk_free_rate": 0.05
+      }
+    },
+    "barone_adesi_whaley": {
+      "enabled": true,
+      "weight": 0.15,
+      "parameters": {
+        "risk_free_rate": 0.05,
+        "dividend_yield": 0.0
+      }
+    },
+    "monte_carlo": {
+      "enabled": true,
+      "weight": 0.2,
+      "parameters": {
+        "simulations": 1000,
+        "risk_free_rate": 0.05,
+        "dividend_yield": 0.0
+      }
+    }
+  },
+  "trade_parameters": {
+    "account_size": 100000.0,
+    "max_risk_per_trade_percentage": 2.0,
+    "max_portfolio_allocation_percentage": 20.0,
+    "max_position_size_per_symbol_percentage": 5.0,
+    "min_price_difference_percentage": 5.0,
+    "max_open_positions": 10,
+    "default_stop_loss_percentage": 25.0,
+    "take_profit_percentage": 50.0,
+    "auto_adjust_breakeven": true,
+    "breakeven_profit_percentage": 15.0
+  },
+  "ml_parameters": {
+    "training_frequency_days": 7,
+    "min_samples_for_training": 30,
+    "feature_selection_threshold": 0.05,
+    "train_test_split_ratio": 0.8,
+    "cross_validation_folds": 5,
+    "hyperparameter_tuning_iterations": 50,
+    "model_save_path": "data/ml_models/"
+  },
+  "rl_parameters": {
+    "learning_rate": 0.001,
+    "discount_factor": 0.99,
+    "exploration_rate": 0.1,
+    "min_exploration_rate": 0.01,
+    "exploration_decay_rate": 0.995,
+    "batch_size": 64,
+    "replay_memory_size": 10000,
+    "target_network_update_frequency": 1000,
+    "training_frequency": 4,
+    "model_save_path": "data/rl_models/"
+  },
+  "logging": {
+    "log_level": "INFO",
+    "console_logging": true,
+    "file_logging": true,
+    "log_directory": "logs/",
+    "trade_log_directory": "logs/trades/",
+    "model_prediction_directory": "logs/model_predictions/",
+    "performance_log_directory": "logs/performance/",
+    "regime_transition_directory": "logs/regime_transitions/"
+  },
+  "notification": {
+    "enable_trade_notifications": true,
+    "enable_daily_summary": true,
+    "enable_error_notifications": true,
+    "enable_milestone_notifications": true,
+    "milestone_pnl_thresholds": [1000, 5000, 10000, 50000],
+    "milestone_win_streak_thresholds": [3, 5, 10, 15]
+  },
+  "infrastructure": {
+    "use_gpu": true,
+    "parallel_processing": true,
+    "max_threads": 8,
+    "model_quantization": true,
+    "optimize_for_latency": true
+  },
+  "backtesting": {
+    "lookback_period_days": 365,
+    "data_collection_frequency_days": 1,
+    "run_frequency_days": 7,
+    "scenarios": ["normal", "high_volatility", "low_volatility", "bullish", "bearish"]
+  }
+}
