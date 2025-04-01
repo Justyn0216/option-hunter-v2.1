@@ -1,4 +1,148 @@
-@classmethod
+"""
+Hypothesis Generator Module
+
+This module generates trading strategy hypotheses for the Option Hunter system.
+It uses data mining, pattern recognition, and evolutionary algorithms to discover
+potentially profitable trading patterns and rules.
+"""
+
+import logging
+import os
+import json
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from datetime import datetime, timedelta
+import random
+import itertools
+from collections import defaultdict, deque
+import time
+import multiprocessing
+from functools import partial
+import pickle
+import copy
+import re
+
+class TradingRule:
+    """
+    Representation of a trading rule hypothesis.
+    """
+    
+    def __init__(self, rule_type=None, condition=None, action=None, params=None, rule_id=None):
+        """
+        Initialize a trading rule.
+        
+        Args:
+            rule_type (str): Type of rule (e.g., 'indicator', 'pattern', 'time')
+            condition (str): Rule condition
+            action (str): Action to take ('buy', 'sell', 'hold')
+            params (dict): Rule parameters
+            rule_id (str): Unique rule identifier
+        """
+        self.rule_id = rule_id or f"rule_{int(time.time())}_{random.randint(1000, 9999)}"
+        self.rule_type = rule_type or random.choice(['indicator', 'pattern', 'time', 'fundamental'])
+        self.condition = condition
+        self.action = action or random.choice(['buy', 'sell', 'hold'])
+        self.params = params or {}
+        
+        # Performance metrics
+        self.performance = {
+            'win_rate': 0.0,
+            'profit_factor': 0.0,
+            'avg_return': 0.0,
+            'sharpe_ratio': 0.0,
+            'trades': 0,
+            'score': 0.0,
+            'tested': False
+        }
+    
+    def __str__(self):
+        """String representation of the rule."""
+        condition_str = self.condition or "Undefined"
+        return f"{self.rule_type.capitalize()} Rule {self.rule_id}: IF {condition_str} THEN {self.action.upper()}"
+    
+    def to_dict(self):
+        """Convert rule to dictionary."""
+        return {
+            'rule_id': self.rule_id,
+            'rule_type': self.rule_type,
+            'condition': self.condition,
+            'action': self.action,
+            'params': self.params,
+            'performance': self.performance
+        }
+    
+    @classmethod
+    def from_dict(cls, rule_dict):
+        """Create rule from dictionary."""
+        rule = cls(
+            rule_type=rule_dict.get('rule_type'),
+            condition=rule_dict.get('condition'),
+            action=rule_dict.get('action'),
+            params=rule_dict.get('params'),
+            rule_id=rule_dict.get('rule_id')
+        )
+        
+        # Set performance if available
+        if 'performance' in rule_dict:
+            rule.performance = rule_dict.get('performance')
+        
+        return rule
+
+
+class TradingStrategy:
+    """
+    Collection of trading rules that form a hypothesis.
+    """
+    
+    def __init__(self, rules=None, strategy_id=None, name=None, description=None):
+        """
+        Initialize a trading strategy.
+        
+        Args:
+            rules (list): List of TradingRule objects
+            strategy_id (str): Unique strategy identifier
+            name (str): Strategy name
+            description (str): Strategy description
+        """
+        self.strategy_id = strategy_id or f"strategy_{int(time.time())}_{random.randint(1000, 9999)}"
+        self.name = name or f"Strategy {self.strategy_id}"
+        self.description = description or f"Generated strategy {self.strategy_id}"
+        self.rules = rules or []
+        self.creation_date = datetime.now().isoformat()
+        
+        # Performance metrics
+        self.performance = {
+            'win_rate': 0.0,
+            'profit_factor': 0.0,
+            'avg_return': 0.0,
+            'sharpe_ratio': 0.0,
+            'max_drawdown': 0.0,
+            'trades': 0,
+            'score': 0.0,
+            'tested': False
+        }
+    
+    def __str__(self):
+        """String representation of the strategy."""
+        return f"{self.name}: {len(self.rules)} rules, Score: {self.performance.get('score', 0.0):.2f}"
+    
+    def add_rule(self, rule):
+        """Add a rule to the strategy."""
+        self.rules.append(rule)
+    
+    def to_dict(self):
+        """Convert strategy to dictionary."""
+        return {
+            'strategy_id': self.strategy_id,
+            'name': self.name,
+            'description': self.description,
+            'rules': [rule.to_dict() for rule in self.rules],
+            'creation_date': self.creation_date,
+            'performance': self.performance
+        }
+    
+    @classmethod
     def from_dict(cls, strategy_dict):
         """Create strategy from dictionary."""
         strategy = cls(
@@ -671,184 +815,3 @@ class HypothesisGenerator:
         except Exception as e:
             self.logger.error(f"Error generating fundamental rules: {str(e)}")
             return rules
-    
-    def generate_rules(self, data, num_rules=30):
-        """
-        Generate trading rules based on historical data.
-        
-        Args:
-            data (pd.DataFrame): Historical market data
-            num_rules (int): Total number of rules to generate
-            
-        Returns:
-            list: Generated trading rules
-        """
-        try:
-            self.logger.info(f"Generating {num_rules} trading rules")
-            
-            # Allocate rules based on weights
-            indicator_rules = int(num_rules * self.indicator_weight)
-            pattern_rules = int(num_rules * self.pattern_weight)
-            time_rules = int(num_rules * self.time_weight)
-            fundamental_rules = int(num_rules * self.fundamental_weight)
-            
-            # Ensure at least one rule of each type if possible
-            if indicator_rules == 0 and self.indicator_weight > 0:
-                indicator_rules = 1
-            if pattern_rules == 0 and self.pattern_weight > 0:
-                pattern_rules = 1
-            if time_rules == 0 and self.time_weight > 0:
-                time_rules = 1
-            if fundamental_rules == 0 and self.fundamental_weight > 0:
-                fundamental_rules = 1
-            
-            # Calculate"""
-Hypothesis Generator Module
-
-This module generates trading strategy hypotheses for the Option Hunter system.
-It uses data mining, pattern recognition, and evolutionary algorithms to discover
-potentially profitable trading patterns and rules.
-"""
-
-import logging
-import os
-import json
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
-import random
-import itertools
-from collections import defaultdict, deque
-import time
-import multiprocessing
-from functools import partial
-import pickle
-import copy
-import re
-
-class TradingRule:
-    """
-    Representation of a trading rule hypothesis.
-    """
-    
-    def __init__(self, rule_type=None, condition=None, action=None, params=None, rule_id=None):
-        """
-        Initialize a trading rule.
-        
-        Args:
-            rule_type (str): Type of rule (e.g., 'indicator', 'pattern', 'time')
-            condition (str): Rule condition
-            action (str): Action to take ('buy', 'sell', 'hold')
-            params (dict): Rule parameters
-            rule_id (str): Unique rule identifier
-        """
-        self.rule_id = rule_id or f"rule_{int(time.time())}_{random.randint(1000, 9999)}"
-        self.rule_type = rule_type or random.choice(['indicator', 'pattern', 'time', 'fundamental'])
-        self.condition = condition
-        self.action = action or random.choice(['buy', 'sell', 'hold'])
-        self.params = params or {}
-        
-        # Performance metrics
-        self.performance = {
-            'win_rate': 0.0,
-            'profit_factor': 0.0,
-            'avg_return': 0.0,
-            'sharpe_ratio': 0.0,
-            'trades': 0,
-            'score': 0.0,
-            'tested': False
-        }
-    
-    def __str__(self):
-        """String representation of the rule."""
-        condition_str = self.condition or "Undefined"
-        return f"{self.rule_type.capitalize()} Rule {self.rule_id}: IF {condition_str} THEN {self.action.upper()}"
-    
-    def to_dict(self):
-        """Convert rule to dictionary."""
-        return {
-            'rule_id': self.rule_id,
-            'rule_type': self.rule_type,
-            'condition': self.condition,
-            'action': self.action,
-            'params': self.params,
-            'performance': self.performance
-        }
-    
-    @classmethod
-    def from_dict(cls, rule_dict):
-        """Create rule from dictionary."""
-        rule = cls(
-            rule_type=rule_dict.get('rule_type'),
-            condition=rule_dict.get('condition'),
-            action=rule_dict.get('action'),
-            params=rule_dict.get('params'),
-            rule_id=rule_dict.get('rule_id')
-        )
-        
-        # Set performance if available
-        if 'performance' in rule_dict:
-            rule.performance = rule_dict.get('performance')
-        
-        return rule
-
-
-class TradingStrategy:
-    """
-    Collection of trading rules that form a hypothesis.
-    """
-    
-    def __init__(self, rules=None, strategy_id=None, name=None, description=None):
-        """
-        Initialize a trading strategy.
-        
-        Args:
-            rules (list): List of TradingRule objects
-            strategy_id (str): Unique strategy identifier
-            name (str): Strategy name
-            description (str): Strategy description
-        """
-        self.strategy_id = strategy_id or f"strategy_{int(time.time())}_{random.randint(1000, 9999)}"
-        self.name = name or f"Strategy {self.strategy_id}"
-        self.description = description or f"Generated strategy {self.strategy_id}"
-        self.rules = rules or []
-        self.creation_date = datetime.now().isoformat()
-        
-        # Performance metrics
-        self.performance = {
-            'win_rate': 0.0,
-            'profit_factor': 0.0,
-            'avg_return': 0.0,
-            'sharpe_ratio': 0.0,
-            'max_drawdown': 0.0,
-            'trades': 0,
-            'score': 0.0,
-            'tested': False
-        }
-    
-    def __str__(self):
-        """String representation of the strategy."""
-        return f"{self.name}: {len(self.rules)} rules, Score: {self.performance.get('score', 0.0):.2f}"
-    
-    def add_rule(self, rule):
-        """Add a rule to the strategy."""
-        self.rules.append(rule)
-    
-    def to_dict(self):
-        """Convert strategy to dictionary."""
-        return {
-            'strategy_id': self.strategy_id,
-            'name': self.name,
-            'description': self.description,
-            'rules': [rule.to_dict() for rule in self.rules],
-            'creation_date': self.creation_date,
-            'performance': self.performance
-        }
-    
-    @classmethod
-    def from_dict(cls, strategy_dict):
-        """Create strategy from dictionary."""
-        strategy = cls(
-            rules=[TradingRule.from_dict(rule) for rule in strategy_dict.get('rules', [])],
-            strategy
